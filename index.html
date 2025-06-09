@@ -117,11 +117,18 @@
                 <input type="text" name="entry.2084991272" class="form-control" pattern="^\d{5,14}$" minlength="5" maxlength="14" placeholder="Contoh: 50000" required>
             </div>
 
+            <div class="mb-3">
+                <label class="form-label">No WhatsApp</label>
+                <input type="text" name="entry.783740083" class="form-control" pattern="^\d{10,14}$" minlength="10" maxlength="14" placeholder="Contoh: 081234567890" required>
+            </div>
+
             <button type="submit" class="btn btn-danger w-100 fw-bold">Submit Sumber Dana</button>
         </form>
 
         <div id="pesanBerhasil" class="alert alert-success mt-4 d-none text-center fw-bold">
             🎉 Terima kasih sudah Berkontribusi! Sampai jumpa di hari H!
+            <br>
+            <a id="whatsappLink" href="#" class="btn btn-success mt-3" target="_blank">Notifikasi via WhatsApp</a>
         </div>
 
         <div class="text-end mt-4">
@@ -148,6 +155,21 @@
       }).then(() => {
         form.classList.add("d-none");
         document.getElementById("pesanBerhasil").classList.remove("d-none");
+
+        const nama = data.get("entry.745998322"); // Nama
+        const jumlah = data.get("entry.2084991272"); // jumlah
+        const noHp = data.get("entry.783740083"); // No HP
+
+        if (noHp) {
+            const nomorWa = noHp.replace(/^0/, '62'); // Ubah 08xx → 62xx
+            const pesan = `Halo ${nama}, Terima kasih sudah berkontribusi untuk acara 17an sebesar ${jumlah}. Sampai jumpa di acara 17an ya!`;
+            const waLink = `https://wa.me/${nomorWa}?text=${encodeURIComponent(pesan)}`;
+            document.getElementById("whatsappLink").href = waLink;
+            document.getElementById("whatsappLink").classList.remove("d-none");
+        } else {
+            document.getElementById("whatsappLink").classList.add("d-none");
+        }
+
       }).catch(() => {
         alert("Gagal mengirim. Coba lagi!");
       });
