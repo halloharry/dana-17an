@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Form Dana Swadaya Warga Untuk 17an</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+          font-family: 'Fredoka', sans-serif;
+          background: linear-gradient(to bottom right, #fff3f3, #ffecec);
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+        }
+        header {
+          background: linear-gradient(to right, red, white);
+          padding: 1rem;
+          text-align: center;
+          color: white;
+          font-weight: bold;
+          font-size: 1.5rem;
+        }
+        footer {
+          background-color: #dc3545;
+          color: white;
+          text-align: center;
+          padding: 0.8rem;
+          margin-top: auto;
+        }
+        .card {
+          border-left: 10px solid red;
+        }
+        .independence-banner {
+          background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Flag-map_of_Indonesia.svg/1280px-Flag-map_of_Indonesia.svg.png') no-repeat center right;
+          background-size: 100px;
+          padding-right: 120px;
+        }
+    </style>
+
+    <script>
+        if (localStorage.getItem("loggedIn") !== "true") {
+          document.addEventListener("DOMContentLoaded", function () {
+            document.body.innerHTML = `
+              <div class="container mt-5">
+                <div class="card p-4 shadow-lg mx-auto" style="max-width: 400px;">
+                  <h2 class="mb-4 text-center text-danger">Login Panitia</h2>
+                  <form id="loginForm">
+                    <div class="mb-3">
+                      <label>Username</label>
+                      <input type="text" class="form-control" id="username" required />
+                    </div>
+                    <div class="mb-3">
+                      <label>Password</label>
+                      <input type="password" class="form-control" id="password" required />
+                    </div>
+                    <button class="btn btn-danger w-100">Login</button>
+                  </form>
+                  <div id="loginError" class="text-danger text-center mt-3 d-none">Username atau password salah!</div>
+                </div>
+              </div>
+            `;
+
+            document.getElementById("loginForm").addEventListener("submit", function (e) {
+              e.preventDefault();
+              const user = document.getElementById("username").value;
+              const pass = document.getElementById("password").value;
+              if (user === "adminDana" && pass === "P@ssw0rd") {
+                localStorage.setItem("loggedIn", "true");
+                location.reload();
+              } else {
+                document.getElementById("loginError").classList.remove("d-none");
+              }
+            });
+          });
+        }
+    </script>
+</head>
+
+<body>
+<header style="background-image: url('https://fahum.umsu.ac.id/info/wp-content/uploads/2023/08/kemerdekaan-indonesia-upaya-dan-faktor-pendukungnya.jpg'); background-size: cover; background-position: center; color: white; padding: 3rem; text-align: center"
+        class="d-flex justify-content-center align-items-center gap-3 p-3 bg-light border-bottom">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/9/9f/Flag_of_Indonesia.svg" height="40" alt="11">
+    <h1 class="m-0 fs-2 text-white fw-bold">Dana Swadaya Lomba 17 Agustus Antar RT</h1>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/9/9f/Flag_of_Indonesia.svg" height="40" alt="11">
+</header>
+
+<div class="container my-5">
+    <div class="card shadow-lg rounded-4 p-4 independence-banner">
+        <h2 class="mb-4 text-center text-danger">Formulir Dana Swadaya Warga</h2>
+        <form id="lombaForm">
+            <div class="mb-3">
+                <label class="form-label">Nama Lengkap</label>
+                <input type="text" name="entry.745998322" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">RT</label>
+                <select name="entry.45144183" class="form-select" required>
+                    <option value="">-- Pilih RT --</option>
+                    <option value="RT 02">RT 02</option>
+                    <option value="RT 03">RT 03</option>
+                    <option value="RT 04">RT 04</option>
+                    <option value="RT 05">RT 05</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Alamat</label>
+                <input type="text" name="entry.18454498" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Jumlah Dalam Rupiah</label>
+                <input type="text" name="entry.2084991272" class="form-control" pattern="^\d{5,14}$" minlength="5" maxlength="14" placeholder="Contoh: 50000" required>
+            </div>
+
+            <button type="submit" class="btn btn-danger w-100 fw-bold">Submit Sumber Dana</button>
+        </form>
+
+        <div id="pesanBerhasil" class="alert alert-success mt-4 d-none text-center fw-bold">
+            🎉 Terima kasih sudah Berkontribusi! Sampai jumpa di hari H!
+        </div>
+
+        <div class="text-end mt-4">
+            <button class="btn btn-outline-danger btn-sm" onclick="logout()">Logout</button>
+        </div>
+    </div>
+</div>
+
+<footer class="d-flex justify-content-center align-items-center gap-3 p-3 bg-danger text-white mt-5 rounded-3 shadow-sm">
+    <span>&copy; 2025 Pixel Playground Studio</span>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/9/9f/Flag_of_Indonesia.svg" alt="Bendera Indonesia" height="30">
+</footer>
+
+<script>
+    document.getElementById("lombaForm")?.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = new FormData(form);
+
+      fetch("https://docs.google.com/forms/d/e/1FAIpQLSeXoHQWSZEDH4EpH6fVk7c8SG-gaCOD5oimS54zgTot5w7B9A/formResponse", {
+        method: "POST",
+        mode: "no-cors",
+        body: data
+      }).then(() => {
+        form.classList.add("d-none");
+        document.getElementById("pesanBerhasil").classList.remove("d-none");
+      }).catch(() => {
+        alert("Gagal mengirim. Coba lagi!");
+      });
+    });
+
+    function logout() {
+      localStorage.removeItem("loggedIn");
+      location.reload();
+    }
+</script>
+</body>
+</html>
