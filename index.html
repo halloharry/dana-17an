@@ -100,13 +100,14 @@
             <h2 class="mb-4 text-center text-danger">Formulir Dana Swadaya Warga</h2>
             <form id="lombaForm">
                 <div class="mb-3">
-                    <label class="form-label">Nama Lengkap</label>
+                    <label class="form-label">Nama Lengkap Warga</label>
                     <input type="text" name="entry.745998322" class="form-control" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">RT</label>
                     <select name="entry.45144183" class="form-select" required>
                         <option value="">-- Pilih RT --</option>
+                        <option value="RT 01">RT 01</option>
                         <option value="RT 02">RT 02</option>
                         <option value="RT 03">RT 03</option>
                         <option value="RT 04">RT 04</option>
@@ -119,11 +120,27 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Jumlah Dalam Rupiah</label>
-                    <input type="text" name="entry.2084991272" class="form-control" required>
+                    <input type="number" name="entry.2084991272" class="form-control" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">No WhatsApp</label>
-                    <input type="text" name="entry.783740083" class="form-control" required>
+                    <input
+                            type="text"
+                            name="entry.783740083"
+                            class="form-control"
+                            inputmode="numeric"
+                            pattern="^\d{10,14}$"
+                            minlength="10"
+                            maxlength="14"
+                            placeholder="Contoh: 081234567890"
+                            required
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                    >
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Nama PIC</label>
+                    <input type="text" name="entry.1250643604" class="form-control" required>
                 </div>
                 <button type="submit" class="btn btn-danger w-100 fw-bold">Submit Sumber Dana</button>
             </form>
@@ -144,10 +161,17 @@
         <h3 class="text-danger text-center mb-4">👥 Daftar Dana Swadaya Warga Terdaftar</h3>
         <h5 class="text-danger mb-3">Total Dana Terkumpul: <span id="totalPeserta">...</span></h5>
 
+        <!--sorting-->
+        <div class="mb-3">
+            <label for="searchNama" class="form-label">Cari Nama</label>
+            <input type="text" id="searchNama" class="form-control" placeholder="Masukkan nama peserta...">
+        </div>
+
         <div class="mb-3">
             <label class="form-label fw-bold">Filter RT</label>
             <select id="filterRT" class="form-select">
                 <option value="">-- Semua RT --</option>
+                <option value="RT 01">RT 01</option>
                 <option value="RT 02">RT 02</option>
                 <option value="RT 03">RT 03</option>
                 <option value="RT 04">RT 04</option>
@@ -160,11 +184,12 @@
                 <thead class="table-danger">
                 <tr>
                     <th>No</th>
-                    <th>Nama</th>
+                    <th>Nama Lengkap Warga</th>
                     <th>RT</th>
                     <th>Alamat</th>
                     <th>Jumlah (Rp)</th>
                     <th>Telepon</th>
+                    <th>Nama PIC</th>
                 </tr>
                 </thead>
                 <tbody></tbody>
@@ -248,11 +273,19 @@
       tbody.innerHTML = "";
 
        const rtFilter = document.getElementById("filterRT").value;
+       const searchNama = document.getElementById("searchNama").value.toLowerCase(); // baru
 
       // Filter sesuai RT
       const filtered = pesertaData.filter((row) => {
         const rt = row["RT"];
-        return rtFilter === "" || rt === rtFilter;
+        const rtValid = rtFilter === "" || rt === rtFilter;
+        const nama = row["Nama Lengkap"]?.toLowerCase() || "";
+
+          // Filter nama
+        const namaValid = nama.includes(searchNama);
+
+        return rtValid && namaValid;
+
       });
 
         let totalDana = 0;
@@ -275,6 +308,7 @@
           <td>${row["Alamat"] || "-"}</td>
           <td>${row["Jumlah"] || "-"}</td>
           <td>${row["Nomor Telepon"] || "-"}</td>
+          <td>${row["PIC"] || "-"}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -300,6 +334,11 @@
     });
 
     document.getElementById("filterRT").addEventListener("change", () => {
+      currentPage = 1;
+      renderPage();
+    });
+
+    document.getElementById("searchNama").addEventListener("input", () => {
       currentPage = 1;
       renderPage();
     });
